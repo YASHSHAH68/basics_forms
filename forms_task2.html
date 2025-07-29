@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forms Practical</title>
+    </head>
+    <body>
+    
+        <form name="myform" onsubmit="return formvalidation(event)">
+
+            <label for="firstname">First Name : </label>
+                <input type="text" name="fname" id="firstname" placeholder="Enter First Name"><br>
+                <span id="fname-errors" style="color: red;"></span>
+            
+            <br><label for="lastname">Last Name : </label>
+                <input type="text" name="lname" id="lastname" placeholder="Enter Last Name"><br>
+                <span id="lname-errors" style="color: red;"></span>
+            
+            <br><label for="phonenumber">Phone Number : </label>
+                <input type="tel" name="phoneno" id="phonenumber" placeholder="Enter Phone Number"><br>
+                <span id="phoneno-errors" style="color: red;"></span>
+
+            <br><label for="demotext">Text Demo :  </label>
+            <input type="text" name="textdemo" id="demotext" placeholder="Enter Demo Text"><br>
+            <span id="textdemo-errors" style="color: red;"></span>
+
+            <br><button type="submit">Click Here For Printing the details </button>
+            <p id="demo"></p>
+        </form> 
+    
+        <label for="demofield">Demo Field : </label>
+        <br><input type="text" name="demofield" id="defield" placeholder="Enter Demo Data">
+
+        <script>
+            function formvalidation(event) 
+            {   
+                event.preventDefault()
+                const form = document.forms['myform'];
+                const inputs = form.querySelectorAll('input');
+    
+                document.querySelectorAll('span[id$="-errors"]').forEach(span => span.textContent = '');
+                document.getElementById('demo').innerHTML = '';
+
+                let isValid = true;
+                let inputValues = [];
+
+                let fnameValue = ''
+                let lnameValue = ''
+
+                inputs.forEach(input => {
+
+                    const name = input.name;
+                    const value = input.value;
+                    const errorSpan = document.getElementById(`${name}-errors`);
+
+                    
+                    if (value === '') {
+                        errorSpan.textContent = "Required Field";
+                        isValid = false;
+                    }
+
+                    
+                    if (name === 'fname') fnameValue = value;
+                    if (name === 'lname') lnameValue = value;
+
+                    
+          
+                    if (name === 'phoneno' && value !== '') {
+                        if (isNaN(value) || value.length !== 10) {
+                            errorSpan.textContent = "Invalid Number Format";
+                            isValid = false;
+                        }
+                    }
+
+                    inputValues.push({ name, value, id: input.id });
+                });
+
+                
+                if (lnameValue !== '' && fnameValue === lnameValue) {
+                    document.getElementById('fname-errors').textContent = "First Name and Last Name cannot be same";
+                    document.getElementById('lname-errors').textContent = "First Name and Last Name cannot be same";
+                    isValid = false;
+                }
+
+                if (!isValid) return false;
+
+                let result = "<h3>Form Values</h3>";
+
+                inputValues.forEach(item => {
+                    const label = document.querySelector(`label[for="${item.id}"]`);
+                    result += `<p><strong>${label.innerText} : ${item.value}</strong> </p>`;
+                });
+
+                document.getElementById('demo').innerHTML = result;
+            }
+        </script>
+    </body>
+</html>
